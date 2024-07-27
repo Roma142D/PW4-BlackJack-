@@ -14,13 +14,11 @@ namespace RomanDoliba.Cards
         private void Awake()
         {
             _spawnedDeck = new List<CardObject>();
-            SpawnDeck();
+            //SpawnDeck();
         }
-
 
         public void SpawnDeck()
         {
-
             List<Card> deck = _deck.InitDeck();
 
             foreach (var card in deck)
@@ -28,6 +26,7 @@ namespace RomanDoliba.Cards
                 CardObject spawnedCard = Instantiate(_cardPrefab, this.transform.position, Quaternion.LookRotation(Vector3.down) , this.transform);
                 spawnedCard.SpriteRenderer.sprite = card.Sprite;
                 spawnedCard.CardData = card;
+                spawnedCard.CardData.SetValueCard(card.Name, card.Suit);
                 _spawnedDeck.Add(spawnedCard);
             }
         }

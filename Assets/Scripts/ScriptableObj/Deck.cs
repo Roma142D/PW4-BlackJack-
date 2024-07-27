@@ -9,7 +9,7 @@ namespace RomanDoliba.Cards.Data
     public class Deck : ScriptableObject
     {
         private List<Card> _deck;
-        [SerializeField] private Card[] _hearts;
+        [SerializeField] private List<Card> _hearts;
         [SerializeField] private List<Card> _pikes;
         [SerializeField] private List<Card> _clovers;
         [SerializeField] private List<Card> _tiles;        
@@ -24,7 +24,7 @@ namespace RomanDoliba.Cards.Data
             _deck.AddRange(_tiles);
 
             Shuffle(_deck);
-            
+
             return _deck;
         }
 
@@ -40,6 +40,7 @@ namespace RomanDoliba.Cards.Data
                 cards[r] = cards[n];
                 cards[n] = card;
             }
+            
         }
     }
 }

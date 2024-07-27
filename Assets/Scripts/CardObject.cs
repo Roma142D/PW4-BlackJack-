@@ -26,10 +26,5 @@ namespace RomanDoliba.Cards
                 _spriteRenderer = value;
             }
         }
-
-        private void Awake()
-        {
-            //_spriteRenderer.sprite = _cardData.Sprite;
-        }
     }
 }

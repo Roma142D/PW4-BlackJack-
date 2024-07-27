@@ -9,55 +9,43 @@ namespace RomanDoliba.Hands
     public class HandController : MonoBehaviour
     {
         private List<CardObject> _cardsInHand;
-        private int _cardsValue;
+        private int _cardsValue = 0;
         private Coroutine _cardsMovingCoroutine;
         public int Result {get => _cardsValue;}
         
         //TEST
         [SerializeField] private DeckController _deck;
-        [SerializeField] private Button _button;
+        
 
 
-        private void Start()
+        private void Awake()
         {
-
             _cardsInHand = new List<CardObject>();
             _cardsMovingCoroutine = null;
             
             //TEST
-            _button.onClick.AddListener(TakeCardOnButton);
+            /*
             for (int i = 0; i < 2; i++)
             {
                 var card1 = _deck.GiveCard();
                 TakeCard(card1);
-                //var card2 = _deck.GiveCard();
             }
-
-            //var card2 = _deck.GiveCard();
-            //var card1 = _deck.GiveCard();
-            //TakeCard(card1);
-            //TakeCard(card2);
+            */
         }
-        private void Update()
-        {
-            foreach (var card in _cardsInHand)
-            {
-                _cardsValue += card.CardData.Value;
-                Debug.Log(_cardsValue);
-            }
-        }
+        
         public void TakeCardOnButton()
         {
             var newCard = _deck.GiveCard();
             TakeCard(newCard);
+            //Debug.Log(_cardsValue);
         }
         
-
         public void TakeCard(CardObject card)
         {
             _cardsInHand.Add(card);
             var moveToPosition = this.transform.localPosition;
             StartCoroutine(PositionCardInHand(card, moveToPosition));
+            _cardsValue += card.CardData.Value;
         }
         
         
@@ -76,8 +64,8 @@ namespace RomanDoliba.Hands
                 yield return new WaitForEndOfFrame();
             }
             
-            _cardsValue = card.CardData.Value;
             card.transform.SetParent(this.transform);
+
             if (_cardsInHand.Count == 2)
             {
                 nextPosition = _cardsInHand[1].transform.localPosition;
@@ -116,7 +104,6 @@ namespace RomanDoliba.Hands
                 yield return new WaitForEndOfFrame();
             }
 
-            //card.transform.localPosition = Vector3.Lerp(startPosition, moveToPosition, currentTime);
             if (waitRoutine)
             {
                 _cardsMovingCoroutine = null;

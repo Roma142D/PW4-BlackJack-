@@ -19,23 +19,13 @@ namespace RomanDoliba.Cards.Data
         public string Name
         {
             get => _name;
-            protected set
-            {
-                if (!_names.Contains(value))
-                {
-                    throw new ArgumentException("Wrong name");
-                }
-                else
-                {
-                    _name = value;
-                }
-            }
+            protected set => _name = value;
         }
         public CardSuit Suit => _suit;
         public int Value => _cardValue;
         public Sprite Sprite => _sprite;
 
-        public Card(string name, CardSuit suit)
+        public void SetValueCard(string name, CardSuit suit)
         {
             Name = name;
             _suit = suit;
