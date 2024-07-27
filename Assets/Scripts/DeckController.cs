@@ -9,11 +9,11 @@ namespace RomanDoliba.Cards
     {
         [SerializeField] private Deck _deck;
         [SerializeField] private CardObject _cardPrefab;
-        private Stack<CardObject> _spawnedDeck;
+        private List<CardObject> _spawnedDeck;
         
         private void Awake()
         {
-            _spawnedDeck = new Stack<CardObject>();
+            _spawnedDeck = new List<CardObject>();
             SpawnDeck();
         }
 
@@ -25,11 +25,18 @@ namespace RomanDoliba.Cards
 
             foreach (var card in deck)
             {
-                CardObject spawnedCard = Instantiate(_cardPrefab, this.transform.position, Quaternion.identity, this.transform);
+                CardObject spawnedCard = Instantiate(_cardPrefab, this.transform.position, Quaternion.LookRotation(Vector3.down) , this.transform);
                 spawnedCard.SpriteRenderer.sprite = card.Sprite;
                 spawnedCard.CardData = card;
-                _spawnedDeck.Push(spawnedCard);
+                _spawnedDeck.Add(spawnedCard);
             }
+        }
+        //TEST
+        public CardObject GiveCard()
+        {
+            var nextCard = _spawnedDeck[0];
+            _spawnedDeck.RemoveAt(0);
+            return nextCard;
         }
     }
 }
