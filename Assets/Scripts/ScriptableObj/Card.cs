@@ -21,8 +21,12 @@ namespace RomanDoliba.Cards.Data
             get => _name;
             protected set => _name = value;
         }
+        public int Value 
+        {
+            get => _cardValue; 
+            set => _cardValue = value;
+        }
         public CardSuit Suit => _suit;
-        public int Value => _cardValue;
         public Sprite Sprite => _sprite;
 
         public void SetValueCard(string name, CardSuit suit)

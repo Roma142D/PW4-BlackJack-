@@ -32,16 +32,13 @@ namespace RomanDoliba.Hands
             }
             */
         }
-        
-        public void TakeCardOnButton()
-        {
-            var newCard = _deck.GiveCard();
-            TakeCard(newCard);
-            //Debug.Log(_cardsValue);
-        }
-        
+                       
         public void TakeCard(CardObject card)
         {
+            if (card.CardData.Name == "Ace" && _cardsValue > 10)
+            {
+                card.CardData.Value = 1;
+            }
             _cardsInHand.Add(card);
             var moveToPosition = this.transform.localPosition;
             StartCoroutine(PositionCardInHand(card, moveToPosition));

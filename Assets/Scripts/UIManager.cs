@@ -1,5 +1,7 @@
+using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace RomanDoliba.UI
@@ -9,11 +11,15 @@ namespace RomanDoliba.UI
         public static UIManager Instance{get; private set;}
         [Header("InGameScreen")]
         [Space]
+        [SerializeField] private GameObject _inGameScreen;
         [SerializeField] private TextMeshProUGUI _botScore;
         [SerializeField] private TextMeshProUGUI _playerScore;
         [SerializeField] private Button _takeCardBtn;
         [SerializeField] private Button _passBtn;
-
+        [Header("OnGameOverScreen")]
+        [Space]
+        [SerializeField] private GameObject _onGameOverScreen;
+        [SerializeField] private TextMeshProUGUI _mainText;
 
         private void Awake()
         {
@@ -27,6 +33,16 @@ namespace RomanDoliba.UI
             }
         }
 
+        public void OnGameStart()
+        {
+            _inGameScreen.SetActive(true);
+            _onGameOverScreen.SetActive(false);
+        }
+        public void OnGameOver()
+        {
+            _inGameScreen.SetActive(false);
+            _onGameOverScreen.SetActive(true);
+        }
         public void ChangeBotScore(int value)
         {
             _botScore.SetText($"B: {value}");
@@ -34,6 +50,18 @@ namespace RomanDoliba.UI
         public void ChangePlayerScore(int value)
         {
             _playerScore.SetText($"P: {value}");
+        }
+        public void AddListenerOnTakeBtn(UnityAction action)
+        {
+            _takeCardBtn.onClick.AddListener(action);
+        }
+        public void AddListenerOnPassBtn(UnityAction action)
+        {
+            _passBtn.onClick.AddListener(action);
+        }
+        public void SetTextOnGameOver(string text)
+        {
+            _mainText.SetText($"{text}");
         }
     }
 }
