@@ -1,7 +1,9 @@
 using RomanDoliba.Cards;
+using RomanDoliba.Events;
 using RomanDoliba.Hands;
 using RomanDoliba.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace RomanDoliba.Core
 {
@@ -9,17 +11,22 @@ namespace RomanDoliba.Core
     {
         [SerializeField] private DeckController _deck;
         [SerializeField] private HandController _playerHand;
-        [SerializeField] private HandController _botHand;
+        [SerializeField] private BotHandController _botHand;
         private UIManager _uiManeger;
+        private bool _isPlayerPass;
        
         private void Start()
         {
             _uiManeger = UIManager.Instance;
-            _uiManeger.OnGameStart();
+            
             _uiManeger.AddListenerOnTakeBtn(TakeCardOnButton);
+            _uiManeger.AddListenerOnPassBtn(PassOnButton);
+            _uiManeger.AddListenerOnRestartBtn(RestartGame);
 
             StartGame();
             CheckResults(_playerHand.Result, _botHand.Result);
+
+            GlobalEventSender.OnEvent += BotTurn;
         }
 
 
@@ -32,22 +39,56 @@ namespace RomanDoliba.Core
                 var card2 = _deck.GiveCard();
                 _playerHand.TakeCard(card1);
                 _botHand.TakeCard(card2);
+
+                Debug.Log("Player and Bot take card");
             }
             _uiManeger.ChangeBotScore(_botHand.Result);
             _uiManeger.ChangePlayerScore(_playerHand.Result);
+            _uiManeger.OnGameStart();
+
+            Debug.Log("cards are dealt");
+        }
+        private void BotTurn(string eventName)
+        {
+            if (eventName == GlobalEventData.BOT_TURN || eventName == GlobalEventData.PLAYER_PASS)
+            {
+                var newCard = _deck.GiveCard();
+                _botHand.BotTakeCard(newCard);
+                _uiManeger.ChangeBotScore(_botHand.Result);
+                Debug.Log("BotTurn");
+            }
+            
+            CheckResults(_playerHand.Result, _botHand.Result);
         }
         private void TakeCardOnButton()
         {
-            var newCard = _deck.GiveCard();
-            _playerHand.TakeCard(newCard);
-            _uiManeger.ChangePlayerScore(_playerHand.Result);
+            if (!_botHand.IsBotTurn || _botHand.IsBotPass)
+            {
+                var newCard = _deck.GiveCard();
+                _playerHand.TakeCard(newCard);
+                _uiManeger.ChangePlayerScore(_playerHand.Result);
+                CheckResults(_playerHand.Result, _botHand.Result);
+                GlobalEventSender.FireEvent(GlobalEventData.BOT_TURN);
+
+                Debug.Log("Player take card");
+            }
+        }
+        private void PassOnButton()
+        {
+            GlobalEventSender.FireEvent(GlobalEventData.PLAYER_PASS);
+            GlobalEventSender.FireEvent(GlobalEventData.BOT_TURN);
+            _isPlayerPass = true;
             CheckResults(_playerHand.Result, _botHand.Result);
+        }
+        private void RestartGame()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         private void CheckResults(int playerScore, int botScore)
         {
             if (ResultCheck.IsBlackJack(playerScore) || ResultCheck.IsBlackJack(botScore))
             {
-                _uiManeger.OnGameOver();
+                _uiManeger.OnGameOver(playerScore, botScore);
                 if (ResultCheck.IsBlackJack(playerScore))
                 {
                     _uiManeger.SetTextOnGameOver("You win");
@@ -59,7 +100,7 @@ namespace RomanDoliba.Core
             }
             else if (ResultCheck.IsTooMuch(playerScore) || ResultCheck.IsTooMuch(botScore))
             {
-                _uiManeger.OnGameOver();
+                _uiManeger.OnGameOver(playerScore, botScore);
                 if (ResultCheck.IsTooMuch(playerScore))
                 {
                     _uiManeger.SetTextOnGameOver("You lose");
@@ -69,6 +110,19 @@ namespace RomanDoliba.Core
                     _uiManeger.SetTextOnGameOver("Bot lose");
                 }
             }
+            else if (_isPlayerPass && _botHand.IsBotPass)
+            {
+                _uiManeger.OnGameOver(playerScore, botScore);
+                if (ResultCheck.IsPlayerWin(playerScore, botScore))
+                {
+                    _uiManeger.SetTextOnGameOver("You win");
+                }
+                else
+                {
+                    _uiManeger.SetTextOnGameOver("Bot win");
+                }
+            }
         }
+
     }
 }

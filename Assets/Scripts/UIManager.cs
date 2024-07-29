@@ -20,6 +20,9 @@ namespace RomanDoliba.UI
         [Space]
         [SerializeField] private GameObject _onGameOverScreen;
         [SerializeField] private TextMeshProUGUI _mainText;
+        [SerializeField] private TextMeshProUGUI _botResult;
+        [SerializeField] private TextMeshProUGUI _playerResult;
+        [SerializeField] private Button _restartButton;
 
         private void Awake()
         {
@@ -29,7 +32,9 @@ namespace RomanDoliba.UI
             }
             else
             {
-                Destroy(gameObject);
+                
+                //Destroy(gameObject);
+                DontDestroyOnLoad(this);
             }
         }
 
@@ -38,10 +43,12 @@ namespace RomanDoliba.UI
             _inGameScreen.SetActive(true);
             _onGameOverScreen.SetActive(false);
         }
-        public void OnGameOver()
+        public void OnGameOver(int playerScore, int botScore)
         {
             _inGameScreen.SetActive(false);
             _onGameOverScreen.SetActive(true);
+            _botResult.SetText($"B: {botScore}");
+            _playerResult.SetText($"P: {playerScore}");
         }
         public void ChangeBotScore(int value)
         {
@@ -58,6 +65,10 @@ namespace RomanDoliba.UI
         public void AddListenerOnPassBtn(UnityAction action)
         {
             _passBtn.onClick.AddListener(action);
+        }
+        public void AddListenerOnRestartBtn(UnityAction action)
+        {
+            _restartButton.onClick.AddListener(action);
         }
         public void SetTextOnGameOver(string text)
         {

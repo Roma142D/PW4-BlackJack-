@@ -66,7 +66,7 @@ namespace RomanDoliba.Hands
             if (_cardsInHand.Count == 2)
             {
                 nextPosition = _cardsInHand[1].transform.localPosition;
-                nextPosition.x -= 1f;
+                nextPosition.x -= 1.2f;
                 _cardsMovingCoroutine = StartCoroutine(MoveCard(_cardsInHand[1], nextPosition, 0.25f, true));
                 while (_cardsMovingCoroutine != null)
                 {
@@ -77,7 +77,7 @@ namespace RomanDoliba.Hands
             {
                 var lastCard = _cardsInHand[_cardsInHand.Count - 1];
                 nextPosition = _cardsInHand[_cardsInHand.Count - 2].transform.localPosition;
-                nextPosition.x -= 1f;
+                nextPosition.x -= 1.2f;
                 _cardsMovingCoroutine = StartCoroutine(MoveCard(lastCard, nextPosition, 0.25f, true));
                 while (_cardsMovingCoroutine != null)
                 {

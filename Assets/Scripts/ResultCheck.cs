@@ -26,5 +26,9 @@ namespace RomanDoliba.Core
                 return false;
             }
         }
+        public static bool IsPlayerWin(int playerScore, int botScore)
+        {
+            return playerScore > botScore;
+        }
     }
 }
