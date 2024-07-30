@@ -23,7 +23,20 @@ namespace RomanDoliba.Hands
         {
             if (_isBotTurn && !_isBotPass)
             {
-                StartCoroutine(BotTurnRoutine(EndBotTurn));
+                StartCoroutine(BotTurnRoutine(EndBotTurn, card));
+                
+                if (Result > 18)
+                {
+                    _isBotPass = true;
+                }
+                
+            }
+        }
+        
+        private IEnumerator BotTurnRoutine(UnityAction action, CardObject card)
+        {
+            while (_isBotTurn)
+            {
                 switch (Result)
                 {
                     case <= 15 : 
@@ -55,17 +68,7 @@ namespace RomanDoliba.Hands
                         }
                     }
                 }
-                if (Result > 18)
-                {
-                    _isBotPass = true;
-                }
-                
-            }
-        }
-        private IEnumerator BotTurnRoutine(UnityAction action)
-        {
-            while (_isBotTurn)
-            {
+
                 yield return new WaitForSeconds(2);
                 action.Invoke();
             }

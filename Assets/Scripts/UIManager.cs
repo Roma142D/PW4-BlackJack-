@@ -26,18 +26,20 @@ namespace RomanDoliba.UI
 
         private void Awake()
         {
-            if(Instance == null)
+            GetInstance();
+        }
+        public UIManager GetInstance()
+        {
+            if (Instance == null)
             {
                 Instance = this;
+                return Instance;
             }
             else
             {
-                
-                //Destroy(gameObject);
-                DontDestroyOnLoad(this);
+                return Instance;
             }
         }
-
         public void OnGameStart()
         {
             _inGameScreen.SetActive(true);

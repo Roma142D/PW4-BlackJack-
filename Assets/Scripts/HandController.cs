@@ -22,15 +22,8 @@ namespace RomanDoliba.Hands
         {
             _cardsInHand = new List<CardObject>();
             _cardsMovingCoroutine = null;
-            
-            //TEST
-            /*
-            for (int i = 0; i < 2; i++)
-            {
-                var card1 = _deck.GiveCard();
-                TakeCard(card1);
-            }
-            */
+
+            ClearHand();
         }
                        
         public void TakeCard(CardObject card)
@@ -44,12 +37,18 @@ namespace RomanDoliba.Hands
             StartCoroutine(PositionCardInHand(card, moveToPosition));
             _cardsValue += card.CardData.Value;
         }
-        
+        public void ChangeCardsColor(Color color)
+        {
+            foreach (var card in _cardsInHand)
+            {
+                card.SpriteRenderer.color = color;
+            }
+        }
         
         private IEnumerator PositionCardInHand(CardObject card, Vector3 endPosition)
         {
             var nextPosition = card.transform.localPosition;
-            nextPosition.x -= 1.5f;
+            nextPosition.x -= 2f;
             _cardsMovingCoroutine = StartCoroutine(MoveCard(card, nextPosition, 0.25f, true));
             while (_cardsMovingCoroutine != null)
             {
@@ -105,6 +104,17 @@ namespace RomanDoliba.Hands
             {
                 _cardsMovingCoroutine = null;
             }
+        }
+        private void ClearHand()
+        {
+            if (_cardsInHand.Count != 0)
+            {
+                foreach (var card in _cardsInHand)
+                {
+                    Destroy(card.gameObject);
+                }
+            }
+            _cardsInHand.Clear();
         }
     }
 }

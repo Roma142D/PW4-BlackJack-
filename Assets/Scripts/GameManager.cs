@@ -17,12 +17,10 @@ namespace RomanDoliba.Core
        
         private void Start()
         {
-            
             _uiManeger = UIManager.Instance;
-            
             _uiManeger.AddListenerOnTakeBtn(TakeCardOnButton);
             _uiManeger.AddListenerOnPassBtn(PassOnButton);
-            _uiManeger.AddListenerOnRestartBtn(RestartGame);
+            _uiManeger.AddListenerOnRestartBtn(RestartGame);          
 
             StartGame();
             CheckResults(_playerHand.Result, _botHand.Result);
@@ -40,10 +38,10 @@ namespace RomanDoliba.Core
                 var card2 = _deck.GiveCard();
                 _playerHand.TakeCard(card1);
                 _botHand.TakeCard(card2);
-
+                _botHand.ChangeCardsColor(Color.red);
                 Debug.Log("Player and Bot take card");
             }
-            _uiManeger.ChangeBotScore(_botHand.Result);
+            
             _uiManeger.ChangePlayerScore(_playerHand.Result);
             _uiManeger.OnGameStart();
 
@@ -55,7 +53,8 @@ namespace RomanDoliba.Core
             {
                 var newCard = _deck.GiveCard();
                 _botHand.BotTakeCard(newCard);
-                _uiManeger.ChangeBotScore(_botHand.Result);
+                _botHand.ChangeCardsColor(Color.red);
+                
                 Debug.Log("BotTurn");
             }
             
@@ -80,6 +79,8 @@ namespace RomanDoliba.Core
             GlobalEventSender.FireEvent(GlobalEventData.BOT_TURN);
             _isPlayerPass = true;
             CheckResults(_playerHand.Result, _botHand.Result);
+
+            Debug.Log("Player pass");
         }
         private void RestartGame()
         {
@@ -90,6 +91,7 @@ namespace RomanDoliba.Core
             if (ResultCheck.IsBlackJack(playerScore) || ResultCheck.IsBlackJack(botScore))
             {
                 _uiManeger.OnGameOver(playerScore, botScore);
+                _botHand.ChangeCardsColor(Color.white);
                 if (ResultCheck.IsBlackJack(playerScore))
                 {
                     _uiManeger.SetTextOnGameOver("You win");
@@ -102,6 +104,7 @@ namespace RomanDoliba.Core
             else if (ResultCheck.IsTooMuch(playerScore) || ResultCheck.IsTooMuch(botScore))
             {
                 _uiManeger.OnGameOver(playerScore, botScore);
+                _botHand.ChangeCardsColor(Color.white);
                 if (ResultCheck.IsTooMuch(playerScore))
                 {
                     _uiManeger.SetTextOnGameOver("You lose");
@@ -114,6 +117,7 @@ namespace RomanDoliba.Core
             else if (_isPlayerPass && _botHand.IsBotPass)
             {
                 _uiManeger.OnGameOver(playerScore, botScore);
+                _botHand.ChangeCardsColor(Color.white);
                 if (ResultCheck.IsPlayerWin(playerScore, botScore))
                 {
                     _uiManeger.SetTextOnGameOver("You win");
@@ -122,6 +126,12 @@ namespace RomanDoliba.Core
                 {
                     _uiManeger.SetTextOnGameOver("Bot win");
                 }
+            }
+            else if (playerScore == botScore)
+            {
+                _uiManeger.OnGameOver(playerScore, botScore);
+                _uiManeger.SetTextOnGameOver("Tie");
+                _botHand.ChangeCardsColor(Color.white);
             }
         }
 
