@@ -17,6 +17,7 @@ namespace RomanDoliba.Core
        
         private void Start()
         {
+            
             _uiManeger = UIManager.Instance;
             
             _uiManeger.AddListenerOnTakeBtn(TakeCardOnButton);
