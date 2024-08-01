@@ -135,5 +135,10 @@ namespace RomanDoliba.Core
             }
         }
 
+        private void OnDestroy()
+        {
+            GlobalEventSender.OnEvent -= BotTurn;
+        }
+
     }
 }

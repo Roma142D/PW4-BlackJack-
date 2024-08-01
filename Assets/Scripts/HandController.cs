@@ -41,7 +41,10 @@ namespace RomanDoliba.Hands
         {
             foreach (var card in _cardsInHand)
             {
-                card.SpriteRenderer.color = color;
+                if (card.SpriteRenderer != null)
+                {
+                    card.SpriteRenderer.color = color;
+                }
             }
         }
         
@@ -111,7 +114,7 @@ namespace RomanDoliba.Hands
             {
                 foreach (var card in _cardsInHand)
                 {
-                    Destroy(card.gameObject);
+                    Destroy(card);
                 }
             }
             _cardsInHand.Clear();

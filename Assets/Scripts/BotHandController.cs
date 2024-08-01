@@ -84,5 +84,9 @@ namespace RomanDoliba.Hands
                 _isBotTurn = true;
             }
         }
+        private void OnDestroy()
+        {
+            GlobalEventSender.OnEvent -= OnBotTurn;
+        }
     }
 }
